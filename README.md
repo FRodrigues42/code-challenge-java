@@ -32,107 +32,17 @@ Add the `help` flag on any command to see how you can use it. For example, `npm 
 
 The `npm run` command will list all of the scripts available to run for this project.
 
-### PWA Support
+### Using Postgresql Database
 
-JHipster ships with PWA (Progressive Web App) support, and it's turned off by default. One of the main components of a PWA is a service worker.
-
-The service worker initialization code is disabled by default. To enable it, uncomment the following code in `src/main/webapp/app/app.module.ts`:
-
-```typescript
-ServiceWorkerModule.register('ngsw-worker.js', { enabled: false }),
-```
-
-### Managing dependencies
-
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+Instead of running gradle with dev profile run with prod:
 
 ```
-npm install --save --save-exact leaflet
+./gradlew -x webapp -Pprod
 ```
 
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
+To easily start a database follow up with the [Using Docker to simplify development](<#using-docker-to-simplify-development-(optional)>) section.
 
-```
-npm install --save-dev --save-exact @types/leaflet
-```
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Edit [src/main/webapp/app/app.module.ts](src/main/webapp/app/app.module.ts) file:
-
-```
-import 'leaflet/dist/leaflet.js';
-```
-
-Edit [src/main/webapp/content/scss/vendor.scss](src/main/webapp/content/scss/vendor.scss) file:
-
-```
-@import '~leaflet/dist/leaflet.css';
-```
-
-Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
-
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
-### Using Angular CLI
-
-You can also use [Angular CLI][] to generate some custom client code.
-
-For example, the following command:
-
-```
-ng generate component my-component
-```
-
-will generate few files:
-
-```
-create src/main/webapp/app/my-component/my-component.component.html
-create src/main/webapp/app/my-component/my-component.component.ts
-update src/main/webapp/app/app.module.ts
-```
-
-### Doing API-First development using openapi-generator
-
-[OpenAPI-Generator]() is configured for this application. You can generate API code from the `src/main/resources/swagger/api.yml` definition file by running:
-
-```bash
-./gradlew openApiGenerate
-```
-
-Then implements the generated delegate classes with `@Service` classes.
-
-To edit the `api.yml` definition file, you can use a tool such as [Swagger-Editor](). Start a local instance of the swagger-editor using docker by running: `docker-compose -f src/main/docker/swagger-editor.yml up -d`. The editor will then be reachable at [http://localhost:7742](http://localhost:7742).
-
-Refer to [Doing API-First development][] for more details.
-
-## Building for production
-
-### Packaging as jar
-
-To build the final jar and optimize the CodeChallengeJava application for production, run:
-
-```
-./gradlew -Pprod clean bootJar
-```
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-```
-java -jar build/libs/*.jar
-```
-
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
-
-Refer to [Using JHipster in production][] for more details.
-
-### Packaging as war
-
-To package your application as a war in order to deploy it to an application server, run:
-
-```
-./gradlew -Pprod -Pwar clean bootWar
-```
+But if you already have a postgres instance then add a user with username `CodeChallengeJava` and without password.
 
 ## Testing
 
@@ -141,25 +51,6 @@ To launch your application's tests, run:
 ```
 ./gradlew test integrationTest jacocoTestReport
 ```
-
-### Client tests
-
-Unit tests are run by [Jest][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-```
-npm test
-```
-
-UI end-to-end tests are powered by [Cypress][]. They're located in [src/test/javascript/cypress](src/test/javascript/cypress)
-and can be run by starting Spring Boot in one terminal (`./gradlew bootRun`) and running the tests (`npm run e2e`) in a second one.
-
-#### Lighthouse audits
-
-You can execute automated [lighthouse audits][https://developers.google.com/web/tools/lighthouse/] with [cypress audits][https://github.com/mfrachet/cypress-audit] by running `npm run e2e:cypress:audits`.
-You should only run the audits when your application is packaged with the production profile.
-The lighthouse report is created in `build/cypress/lhreport.html`
-
-For more information, refer to the [Running tests page][].
 
 ### Code quality
 
@@ -176,10 +67,18 @@ You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqu
 Then, run a Sonar analysis:
 
 ```
-./gradlew -Pprod clean check jacocoTestReport sonarqube
+./gradlew -Pprod clean check jacocoTestReport sonarqube -Dsonar.host.url=http://localhost:9001
 ```
 
 For more information, refer to the [Code quality page][].
+
+### Using curl to test exercise services
+
+After starting the backend application with gradle, just use `curl` in another shell to `http://localhost:8080` endpoint.
+
+```
+curl -X GET 'http://localhost:8080/difference?number=1'
+```
 
 ## Using Docker to simplify development (optional)
 
@@ -211,10 +110,6 @@ docker-compose -f src/main/docker/app.yml up -d
 ```
 
 For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
-
-## Continuous Integration (optional)
-
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
 
 [jhipster homepage and latest documentation]: https://www.jhipster.tech
 [jhipster 7.1.0 archive]: https://www.jhipster.tech/documentation-archive/v7.1.0

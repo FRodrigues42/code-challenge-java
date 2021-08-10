@@ -16,7 +16,6 @@ plugins {
     id "org.springframework.boot"
     id "com.google.cloud.tools.jib"
     id "com.gorylenko.gradle-git-properties"
-    id "org.openapi.generator"
     id "com.github.node-gradle.node"
     id "org.liquibase.gradle"
     id "org.sonarqube"
@@ -35,7 +34,6 @@ assert System.properties["java.specification.version"] == "1.8" || "1.9" || "10"
 
 apply from: "gradle/docker.gradle"
 apply from: "gradle/sonar.gradle"
-apply from: "gradle/swagger.gradle"
 //jhipster-needle-gradle-apply-from - JHipster will add additional gradle scripts to be applied here
 
 if (project.hasProperty("prod") || project.hasProperty("gae")) {
@@ -117,19 +115,6 @@ task integrationTest(type: Test) {
     reports.html.enabled = false
 }
 
-task cucumberTest(type: Test) {
-    description = "Execute cucumber BDD tests."
-    group = "verification"
-    include "**/*CucumberIT*"
-
-    // uncomment if the tests reports are not generated
-    // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
-    // ignoreFailures true
-    reports.html.enabled = false
-}
-
-check.dependsOn cucumberTest
-
 check.dependsOn integrationTest
 task testReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/tests")
@@ -139,11 +124,6 @@ task testReport(type: TestReport) {
 task integrationTestReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/tests")
     reportOn integrationTest
-}
-
-task cucumberTestReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/tests")
-    reportOn cucumberTest
 }
 
 if (!project.hasProperty("runList")) {
@@ -279,16 +259,13 @@ dependencies {
     annotationProcessor "org.hibernate:hibernate-jpamodelgen:${hibernateVersion}"
     annotationProcessor "org.glassfish.jaxb:jaxb-runtime:${jaxbRuntimeVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
-    testImplementation "io.cucumber:cucumber-junit"
-    testImplementation "io.cucumber:cucumber-java"
-    testImplementation "io.cucumber:cucumber-spring"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.boot:spring-boot-test"
     testImplementation "com.tngtech.archunit:archunit-junit5-api:${archunitJunit5Version}"
     testRuntimeOnly "com.tngtech.archunit:archunit-junit5-engine:${archunitJunit5Version}"
     testImplementation "com.h2database:h2"
-    liquibaseRuntime "com.h2database:h2"
+    liquibaseRuntime "org.postgresql:postgresql"
     developmentOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }

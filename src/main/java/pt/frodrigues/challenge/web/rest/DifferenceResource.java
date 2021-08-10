@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.frodrigues.challenge.domain.Difference;
-import pt.frodrigues.challenge.repository.DifferenceRepository;
 import pt.frodrigues.challenge.service.DifferenceService;
 import pt.frodrigues.challenge.web.rest.errors.InvalidNumberException;
 import pt.frodrigues.challenge.web.rest.vm.DifferenceVM;
