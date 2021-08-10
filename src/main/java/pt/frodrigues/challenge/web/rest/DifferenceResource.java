@@ -9,6 +9,7 @@ import pt.frodrigues.challenge.domain.Difference;
 import pt.frodrigues.challenge.repository.DifferenceRepository;
 import pt.frodrigues.challenge.service.DifferenceService;
 import pt.frodrigues.challenge.service.DifferencesService;
+import pt.frodrigues.challenge.web.rest.errors.InvalidNumberException;
 import tech.jhipster.web.util.ResponseUtil;
 
 import javax.validation.Valid;
@@ -50,6 +51,11 @@ public class DifferenceResource {
     @GetMapping("/difference")
     public ResponseEntity<Difference> getDifferenceByNumber(@NotNull @Min(1L) @Max(100L) @Valid @RequestParam(value = "number") Long n) {
         log.debug("REST request to get Difference : {}", n);
+
+        if(n < 1 || n > 100) {
+            throw new InvalidNumberException();
+        }
+
         Optional<Difference> difference = Optional.of(differenceService.getDifference(n));
         return ResponseUtil.wrapOrNotFound(difference);
     }
