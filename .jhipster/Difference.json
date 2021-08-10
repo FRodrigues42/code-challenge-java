@@ -3,7 +3,7 @@
   "fields": [
     {
       "fieldName": "datetime",
-      "fieldType": "Instant"
+      "fieldType": "ZonedDateTime"
     },
     {
       "fieldName": "value",

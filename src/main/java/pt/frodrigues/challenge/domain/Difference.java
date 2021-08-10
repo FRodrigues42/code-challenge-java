@@ -1,7 +1,7 @@
 package pt.frodrigues.challenge.domain;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -23,7 +23,7 @@ public class Difference implements Serializable {
     private Long id;
 
     @Column(name = "datetime")
-    private Instant datetime;
+    private ZonedDateTime datetime;
 
     @NotNull
     @Column(name = "value", nullable = false)
@@ -52,16 +52,16 @@ public class Difference implements Serializable {
         return this;
     }
 
-    public Instant getDatetime() {
+    public ZonedDateTime getDatetime() {
         return this.datetime;
     }
 
-    public Difference datetime(Instant datetime) {
+    public Difference datetime(ZonedDateTime datetime) {
         this.datetime = datetime;
         return this;
     }
 
-    public void setDatetime(Instant datetime) {
+    public void setDatetime(ZonedDateTime datetime) {
         this.datetime = datetime;
     }
 

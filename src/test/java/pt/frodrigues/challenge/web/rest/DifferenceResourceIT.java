@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static pt.frodrigues.challenge.web.rest.TestUtil.sameInstant;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,8 +34,8 @@ import pt.frodrigues.challenge.repository.DifferenceRepository;
 @WithMockUser
 class DifferenceResourceIT {
 
-    private static final Instant DEFAULT_DATETIME = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_DATETIME = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final ZonedDateTime DEFAULT_DATETIME = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_DATETIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final Long DEFAULT_VALUE = 1L;
     private static final Long UPDATED_VALUE = 2L;
@@ -178,7 +181,7 @@ class DifferenceResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(difference.getId().intValue())))
-            .andExpect(jsonPath("$.[*].datetime").value(hasItem(DEFAULT_DATETIME.toString())))
+            .andExpect(jsonPath("$.[*].datetime").value(hasItem(sameInstant(DEFAULT_DATETIME))))
             .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.intValue())))
             .andExpect(jsonPath("$.[*].number").value(hasItem(DEFAULT_NUMBER.intValue())))
             .andExpect(jsonPath("$.[*].occurrences").value(hasItem(DEFAULT_OCCURRENCES.intValue())));
@@ -196,7 +199,7 @@ class DifferenceResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(difference.getId().intValue()))
-            .andExpect(jsonPath("$.datetime").value(DEFAULT_DATETIME.toString()))
+            .andExpect(jsonPath("$.datetime").value(sameInstant(DEFAULT_DATETIME)))
             .andExpect(jsonPath("$.value").value(DEFAULT_VALUE.intValue()))
             .andExpect(jsonPath("$.number").value(DEFAULT_NUMBER.intValue()))
             .andExpect(jsonPath("$.occurrences").value(DEFAULT_OCCURRENCES.intValue()));
