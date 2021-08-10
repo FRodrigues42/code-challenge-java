@@ -2,6 +2,40 @@
 
 This application was generated using JHipster 7.1.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v7.1.0](https://www.jhipster.tech/documentation-archive/v7.1.0).
 
+## Code of interest
+
+Api definition:
+
+```
+src/main/resources/swagger/api.yml
+```
+
+Services:
+
+```
+src/main/java/pt/frodrigues/challenge/service/DifferenceService.java
+```
+
+JPA Domain and Spring repositories:
+
+```
+src/main/java/pt/frodrigues/challenge/domain/Difference.java
+src/main/java/pt/frodrigues/challenge/repository/DifferenceRepository.java
+```
+
+Controllers:
+
+```
+src/main/java/pt/frodrigues/challenge/web/rest/DifferenceResource.java
+```
+
+Tests:
+
+```
+src/test/java/pt/frodrigues/challenge/service/DifferenceServiceIT.java
+src/test/java/pt/frodrigues/challenge/web/rest/DifferenceResourceIT.java
+```
+
 ## Development
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
