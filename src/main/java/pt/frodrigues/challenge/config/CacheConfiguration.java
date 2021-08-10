@@ -48,6 +48,7 @@ public class CacheConfiguration {
             createCache(cm, pt.frodrigues.challenge.domain.User.class.getName());
             createCache(cm, pt.frodrigues.challenge.domain.Authority.class.getName());
             createCache(cm, pt.frodrigues.challenge.domain.User.class.getName() + ".authorities");
+            createCache(cm, pt.frodrigues.challenge.domain.Difference.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

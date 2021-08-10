@@ -1,0 +1,7 @@
+entity Difference {
+	datetime Instant
+    value Long required
+    number Long required unique min(1) max(100)
+    occurrences Long
+}
+    

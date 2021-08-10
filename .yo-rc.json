@@ -43,6 +43,8 @@
     "devServerPort": 4200,
     "clientPackageManager": "npm",
     "languages": ["pt-pt", "en"],
-    "cypressCoverage": false
+    "cypressCoverage": false,
+    "entities": ["Difference"],
+    "lastLiquibaseTimestamp": 1628554036000
   }
 }

@@ -1,0 +1,5 @@
+src/main/java/pt/frodrigues/challenge/service/api/dto/Difference.java
+src/main/java/pt/frodrigues/challenge/web/api/ApiUtil.java
+src/main/java/pt/frodrigues/challenge/web/api/DifferenceApi.java
+src/main/java/pt/frodrigues/challenge/web/api/DifferenceApiController.java
+src/main/java/pt/frodrigues/challenge/web/api/DifferenceApiDelegate.java

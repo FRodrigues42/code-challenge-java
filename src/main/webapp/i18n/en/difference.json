@@ -1,0 +1,27 @@
+{
+  "codeChallengeJavaApp": {
+    "difference": {
+      "home": {
+        "title": "Differences",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Difference",
+        "createOrEditLabel": "Create or edit a Difference",
+        "notFound": "No Differences found"
+      },
+      "created": "A new Difference is created with identifier {{ param }}",
+      "updated": "A Difference is updated with identifier {{ param }}",
+      "deleted": "A Difference is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Difference {{ id }}?"
+      },
+      "detail": {
+        "title": "Difference"
+      },
+      "id": "ID",
+      "datetime": "Datetime",
+      "value": "Value",
+      "number": "Number",
+      "occurrences": "Occurrences"
+    }
+  }
+}
