@@ -1,10 +1,6 @@
-package pt.frodrigues.challenge.web.rest;
+package pt.frodrigues.challenge.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static pt.frodrigues.challenge.web.rest.TestUtil.sameInstant;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -19,21 +15,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import pt.frodrigues.challenge.IntegrationTest;
 import pt.frodrigues.challenge.domain.Difference;
 import pt.frodrigues.challenge.repository.DifferenceRepository;
+import pt.frodrigues.challenge.service.DifferenceService;
 
 /**
- * Integration tests for the {@link DifferencesResource} REST controller.
+ * Integration tests for the {@link DifferenceService}.
  */
 @IntegrationTest
 @AutoConfigureMockMvc
 @WithMockUser
-class DifferenceResourceIT {
+public class DifferenceServiceIT {
 
     private static final ZonedDateTime DEFAULT_DATETIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
@@ -54,14 +50,14 @@ class DifferenceResourceIT {
     private EntityManager em;
 
     @Autowired
-    private MockMvc restDifferenceMockMvc;
+    private DifferenceService differenceService;
 
     @Test
     @Transactional
-    void getDifference() throws Exception {
+    void getDifference() {
         int databaseSizeBeforeCreate = differenceRepository.findAll().size();
-        // Create the Difference
-        restDifferenceMockMvc.perform(get(ENTITY_API_URL_NUMBER, DEFAULT_NUMBER)).andExpect(status().is2xxSuccessful());
+
+        differenceService.getDifference(DEFAULT_NUMBER);
 
         // Validate the Difference in the database
         List<Difference> differenceList = differenceRepository.findAll();
@@ -76,17 +72,20 @@ class DifferenceResourceIT {
     @Test
     @Transactional
     void getRepeatedDifference() throws Exception {
-        // Create the Difference
-        restDifferenceMockMvc.perform(get(ENTITY_API_URL_NUMBER, DEFAULT_NUMBER)).andExpect(status().is2xxSuccessful());
+        int databaseSizeBeforeCreate = differenceRepository.findAll().size();
 
-        //Repeat with some time interval
+        differenceService.getDifference(DEFAULT_NUMBER);
+
+        int databaseSizeAfterFirstGet = differenceRepository.findAll().size();
+
         //We would need to change this if we needed to do a lot of tests
         TimeUnit.MILLISECONDS.sleep(1);
 
-        restDifferenceMockMvc.perform(get(ENTITY_API_URL_NUMBER, DEFAULT_NUMBER)).andExpect(status().is2xxSuccessful());
+        differenceService.getDifference(DEFAULT_NUMBER);
 
         // Validate the Difference in the database
         List<Difference> differenceList = differenceRepository.findAll();
+        assertThat(differenceList).hasSize(databaseSizeAfterFirstGet);
         Difference testDifference = differenceList.get(differenceList.size() - 1);
         assertThat(testDifference.getDatetime()).isAfter(DEFAULT_DATETIME);
         assertThat(testDifference.getValue()).isEqualTo(DEFAULT_VALUE);
@@ -95,26 +94,8 @@ class DifferenceResourceIT {
     }
 
     @Test
-    @Transactional
-    void getDifferenceWithInvalidLowerNumber() throws Exception {
-        int databaseSizeBeforeCreate = differenceRepository.findAll().size();
-
-        restDifferenceMockMvc.perform(get(ENTITY_API_URL_NUMBER, -1)).andExpect(status().is4xxClientError());
-
-        // Validate the Difference in the database
-        List<Difference> differenceList = differenceRepository.findAll();
-        assertThat(differenceList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    void getDifferenceWithInvalidHigherNumber() throws Exception {
-        int databaseSizeBeforeCreate = differenceRepository.findAll().size();
-
-        restDifferenceMockMvc.perform(get(ENTITY_API_URL_NUMBER, 101)).andExpect(status().is4xxClientError());
-
-        // Validate the Difference in the database
-        List<Difference> differenceList = differenceRepository.findAll();
-        assertThat(differenceList).hasSize(databaseSizeBeforeCreate);
+    void calculateDiff() {
+        assertThat(differenceService.calculateDiff(1L)).isEqualTo(0L);
+        assertThat(differenceService.calculateDiff(10L)).isEqualTo(2640L);
     }
 }

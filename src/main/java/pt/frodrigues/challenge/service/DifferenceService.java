@@ -1,6 +1,10 @@
-
 package pt.frodrigues.challenge.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -8,14 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.frodrigues.challenge.domain.Difference;
 import pt.frodrigues.challenge.repository.DifferenceRepository;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-
 /**
- * Service Implementation for managing {@link Difference}.
+ * Service Implementation of the Main Exercise to get {@link Difference}.
  */
 @Service
 @Transactional
@@ -34,7 +32,7 @@ public class DifferenceService {
 
         Difference diff;
 
-        if(previous.isPresent()) {
+        if (previous.isPresent()) {
             diff = previous.get();
             diff.setOccurrences(diff.getOccurrences() + 1);
         } else {
@@ -48,17 +46,17 @@ public class DifferenceService {
         return differenceRepository.save(diff);
     }
 
-    private Long calculateDiff(Long n) {
+    Long calculateDiff(Long n) {
         long sumOfSquares = 0L;
         long sum = 0L;
 
-        for(int i = 1; i <= n; ++i) {
-            sumOfSquares += i^2;
+        for (int i = 1; i <= n; ++i) {
+            sumOfSquares += i * i;
             sum += i;
         }
 
         long squareOfSum = sum * sum;
 
-        return Math.abs(sumOfSquares - squareOfSum);
+        return squareOfSum - sumOfSquares;
     }
 }
