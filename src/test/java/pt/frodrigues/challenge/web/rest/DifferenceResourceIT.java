@@ -28,7 +28,7 @@ import pt.frodrigues.challenge.domain.Difference;
 import pt.frodrigues.challenge.repository.DifferenceRepository;
 
 /**
- * Integration tests for the {@link DifferencesResource} REST controller.
+ * Integration tests for the {@link DifferenceResource} REST controller.
  */
 @IntegrationTest
 @AutoConfigureMockMvc

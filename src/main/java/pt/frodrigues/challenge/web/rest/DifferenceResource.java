@@ -1,7 +1,5 @@
 package pt.frodrigues.challenge.web.rest;
 
-import java.util.Optional;
-import java.util.function.Consumer;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -9,17 +7,14 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.frodrigues.challenge.domain.Difference;
 import pt.frodrigues.challenge.repository.DifferenceRepository;
 import pt.frodrigues.challenge.service.DifferenceService;
-import pt.frodrigues.challenge.service.DifferencesService;
 import pt.frodrigues.challenge.web.rest.errors.InvalidNumberException;
 import pt.frodrigues.challenge.web.rest.vm.DifferenceVM;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link Difference}.
@@ -37,11 +32,8 @@ public class DifferenceResource {
 
     private final DifferenceService differenceService;
 
-    private final DifferenceRepository differenceRepository;
-
-    public DifferenceResource(DifferenceService differenceService, DifferenceRepository differenceRepository) {
+    public DifferenceResource(DifferenceService differenceService) {
         this.differenceService = differenceService;
-        this.differenceRepository = differenceRepository;
     }
 
     /**
