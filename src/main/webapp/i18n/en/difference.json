@@ -3,6 +3,7 @@
     "difference": {
       "home": {
         "title": "Differences",
+        "formtitle": "Get difference",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Difference",
         "createOrEditLabel": "Create or edit a Difference",

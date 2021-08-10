@@ -2,7 +2,8 @@
   "codeChallengeJavaApp": {
     "difference": {
       "home": {
-        "title": "Differences",
+        "title": "Diferença",
+        "formtitle": "Get diferença",
         "refreshListLabel": "Refresh list",
         "createLabel": "Criar novo(a) Difference",
         "createOrEditLabel": "Criar ou editar Difference",
