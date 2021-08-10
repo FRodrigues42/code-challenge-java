@@ -14,66 +14,14 @@ export type EntityArrayResponseType = HttpResponse<IDifference[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DifferenceService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/differences');
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('difference');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(difference: IDifference): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(difference);
+  get(n: number): Observable<EntityResponseType> {
     return this.http
-      .post<IDifference>(this.resourceUrl, copy, { observe: 'response' })
+      .get<IDifference>(`${this.resourceUrl}?number=${n}`, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
-
-  update(difference: IDifference): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(difference);
-    return this.http
-      .put<IDifference>(`${this.resourceUrl}/${getDifferenceIdentifier(difference) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
-
-  partialUpdate(difference: IDifference): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(difference);
-    return this.http
-      .patch<IDifference>(`${this.resourceUrl}/${getDifferenceIdentifier(difference) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
-
-  find(id: number): Observable<EntityResponseType> {
-    return this.http
-      .get<IDifference>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
-
-  query(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http
-      .get<IDifference[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
-  }
-
-  delete(id: number): Observable<HttpResponse<{}>> {
-    return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
-
-  addDifferenceToCollectionIfMissing(
-    differenceCollection: IDifference[],
-    ...differencesToCheck: (IDifference | null | undefined)[]
-  ): IDifference[] {
-    const differences: IDifference[] = differencesToCheck.filter(isPresent);
-    if (differences.length > 0) {
-      const differenceCollectionIdentifiers = differenceCollection.map(differenceItem => getDifferenceIdentifier(differenceItem)!);
-      const differencesToAdd = differences.filter(differenceItem => {
-        const differenceIdentifier = getDifferenceIdentifier(differenceItem);
-        if (differenceIdentifier == null || differenceCollectionIdentifiers.includes(differenceIdentifier)) {
-          return false;
-        }
-        differenceCollectionIdentifiers.push(differenceIdentifier);
-        return true;
-      });
-      return [...differencesToAdd, ...differenceCollection];
-    }
-    return differenceCollection;
   }
 
   protected convertDateFromClient(difference: IDifference): IDifference {
