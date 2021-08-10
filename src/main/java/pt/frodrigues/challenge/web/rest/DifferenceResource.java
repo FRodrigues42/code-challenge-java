@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pt.frodrigues.challenge.domain.Difference;
 import pt.frodrigues.challenge.repository.DifferenceRepository;
+import pt.frodrigues.challenge.service.DifferenceService;
 import pt.frodrigues.challenge.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -24,7 +24,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class DifferenceResource {
 
     private final Logger log = LoggerFactory.getLogger(DifferenceResource.class);
@@ -34,9 +33,12 @@ public class DifferenceResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final DifferenceService differenceService;
+
     private final DifferenceRepository differenceRepository;
 
-    public DifferenceResource(DifferenceRepository differenceRepository) {
+    public DifferenceResource(DifferenceService differenceService, DifferenceRepository differenceRepository) {
+        this.differenceService = differenceService;
         this.differenceRepository = differenceRepository;
     }
 
@@ -53,7 +55,7 @@ public class DifferenceResource {
         if (difference.getId() != null) {
             throw new BadRequestAlertException("A new difference cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Difference result = differenceRepository.save(difference);
+        Difference result = differenceService.save(difference);
         return ResponseEntity
             .created(new URI("/api/differences/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -87,7 +89,7 @@ public class DifferenceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Difference result = differenceRepository.save(difference);
+        Difference result = differenceService.save(difference);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, difference.getId().toString()))
@@ -122,27 +124,7 @@ public class DifferenceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Difference> result = differenceRepository
-            .findById(difference.getId())
-            .map(
-                existingDifference -> {
-                    if (difference.getDatetime() != null) {
-                        existingDifference.setDatetime(difference.getDatetime());
-                    }
-                    if (difference.getValue() != null) {
-                        existingDifference.setValue(difference.getValue());
-                    }
-                    if (difference.getNumber() != null) {
-                        existingDifference.setNumber(difference.getNumber());
-                    }
-                    if (difference.getOccurrences() != null) {
-                        existingDifference.setOccurrences(difference.getOccurrences());
-                    }
-
-                    return existingDifference;
-                }
-            )
-            .map(differenceRepository::save);
+        Optional<Difference> result = differenceService.partialUpdate(difference);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -158,7 +140,7 @@ public class DifferenceResource {
     @GetMapping("/differences")
     public List<Difference> getAllDifferences() {
         log.debug("REST request to get all Differences");
-        return differenceRepository.findAll();
+        return differenceService.findAll();
     }
 
     /**
@@ -170,7 +152,7 @@ public class DifferenceResource {
     @GetMapping("/differences/{id}")
     public ResponseEntity<Difference> getDifference(@PathVariable Long id) {
         log.debug("REST request to get Difference : {}", id);
-        Optional<Difference> difference = differenceRepository.findById(id);
+        Optional<Difference> difference = differenceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(difference);
     }
 
@@ -183,7 +165,7 @@ public class DifferenceResource {
     @DeleteMapping("/differences/{id}")
     public ResponseEntity<Void> deleteDifference(@PathVariable Long id) {
         log.debug("REST request to delete Difference : {}", id);
-        differenceRepository.deleteById(id);
+        differenceService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

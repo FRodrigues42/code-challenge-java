@@ -4,4 +4,5 @@ entity Difference {
     number Long required unique min(1) max(100)
     occurrences Long
 }
-    
+
+service Difference with serviceClass
